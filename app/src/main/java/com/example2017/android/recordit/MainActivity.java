@@ -1,5 +1,6 @@
 package com.example2017.android.recordit;
 
+import android.Manifest;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -50,6 +51,15 @@ public class MainActivity extends AppCompatActivity {
         buttonStopPlayingRecord=(Button)findViewById(R.id.button_stop_PlayingRecord);
 
         random=new Random();
+
+
+        //to Ask for permisssion
+        ActivityCompat.requestPermissions(MainActivity.this,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                1);
+
+
+
 
         buttonRecord.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,33 +202,53 @@ buttonStop.setOnClickListener(new View.OnClickListener() {
 
     }
 
-    private void requestPermission() {
-        ActivityCompat.requestPermissions(MainActivity.this, new
-                String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, RequestPermissionCode);
-    }
+
+
+
 
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case RequestPermissionCode:
-                if (grantResults.length> 0) {
-                    boolean StoragePermission = grantResults[0] ==
-                            PackageManager.PERMISSION_GRANTED;
-                    boolean RecordPermission = grantResults[1] ==
-                            PackageManager.PERMISSION_GRANTED;
+            case 1: {
 
-                    if (StoragePermission && RecordPermission) {
-                        Toast.makeText(MainActivity.this, "Permission Granted",
-                                Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(MainActivity.this,"Permission Denied",Toast.LENGTH_LONG).show();
-                    }
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
+                    finish();
+                    System.exit(0);
                 }
-                break;
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
         }
     }
+
+
+
+
+
+
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(MainActivity.this, new
+                String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, RequestPermissionCode);
+    }
+
+
+
+
 
     public boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(getApplicationContext(),
