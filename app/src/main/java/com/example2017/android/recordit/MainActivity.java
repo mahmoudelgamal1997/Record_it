@@ -4,12 +4,10 @@ import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Environment;
-import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -22,12 +20,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OptionalDataException;
-import java.io.StreamCorruptedException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -42,8 +38,8 @@ public class MainActivity extends AppCompatActivity {
     MediaPlayer mediaPlayer;
     ArrayList<String> audiofilesDirectory=new ArrayList<>();
     int index =0;
-    FileOutputStream outputStream;
-    ObjectOutputStream objectOutputStream;
+    String root;
+    File audioRecorderDircetory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,17 +53,22 @@ public class MainActivity extends AppCompatActivity {
 
         random=new Random();
 
-
-
         buttonRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 if (checkPermission())
                 {
+
+
+                    AudioSavePathInDevice=SavingFiles()+"/"+
+                           CreatRandomAudioName(numberOfrandomFile)+"AudioRecording.3gp";
+
+                    /*
                     AudioSavePathInDevice=
-                            Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+
+                             Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+
                                     CreatRandomAudioName(numberOfrandomFile)+"AudioRecording.3gp";
+*/
 
                     mediaRecorderReady();
                     audiofilesDirectory.add(AudioSavePathInDevice);
@@ -141,9 +142,11 @@ buttonStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                mediaPlayer.stop();
-                buttonRecord.setEnabled(true);
-                buttonStop.setEnabled(true);
+              //  mediaPlayer.stop();
+               // buttonRecord.setEnabled(true);
+                //buttonStop.setEnabled(true);
+        //    RetriveAudio();
+
             }
         });
 
@@ -161,8 +164,11 @@ buttonStop.setOnClickListener(new View.OnClickListener() {
     }
 
 
+    //to creat filename by his data
     public String CreatRandomAudioName(int stringlength)
     {
+
+
         StringBuilder stringBuilder=new StringBuilder(stringlength);
 
         int i=0;
@@ -177,41 +183,47 @@ buttonStop.setOnClickListener(new View.OnClickListener() {
 
 
 
-    public void SavingFiles()
+    public String SavingFiles()
     {
-        String filename="records";
+        //Creating File
+        File directory = new File(Environment.getExternalStorageDirectory() + File.separator + "AudioRecord");
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+        //return file Path
+        return directory.getAbsolutePath();
+    }
 
-      //  File file = new File(getApplicationContext().getFilesDir(), filename);
 
+    public Object RetriveAudio() {
+        Object object = null;
         try {
-            outputStream=openFileOutput(filename,MODE_PRIVATE);
 
-            objectOutputStream  =  new ObjectOutputStream(outputStream);
-            objectOutputStream.writeObject(audiofilesDirectory);
-            objectOutputStream.close();
-            outputStream.close();
-
-
+            FileInputStream fileInputStream = openFileInput("records");
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            object = objectInputStream.readObject();
 
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
 
 
+        return object;
     }
 
 
-    public void RetriveAudio()
+    @Override
+    protected void onDestroy()
     {
+        super.onDestroy();
 
 
     }
-
-
-
 
     private void requestPermission() {
         ActivityCompat.requestPermissions(MainActivity.this, new
@@ -249,6 +261,9 @@ buttonStop.setOnClickListener(new View.OnClickListener() {
         return result == PackageManager.PERMISSION_GRANTED &&
                 result1 == PackageManager.PERMISSION_GRANTED;
     }
+
+
+
 }
 
 
