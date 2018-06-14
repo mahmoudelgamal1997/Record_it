@@ -38,8 +38,6 @@ public class MainActivity extends AppCompatActivity {
     MediaPlayer mediaPlayer;
     ArrayList<String> audiofilesDirectory=new ArrayList<>();
     int index =0;
-    String root;
-    File audioRecorderDircetory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,16 +60,12 @@ public class MainActivity extends AppCompatActivity {
 
 
                     AudioSavePathInDevice=SavingFiles()+"/"+
-                           CreatRandomAudioName(numberOfrandomFile)+"AudioRecording.3gp";
+                         CreatDateAudioName()+"AudioRecording.3gp";
 
-                    /*
-                    AudioSavePathInDevice=
-                             Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+
-                                    CreatRandomAudioName(numberOfrandomFile)+"AudioRecording.3gp";
-*/
+
 
                     mediaRecorderReady();
-                    audiofilesDirectory.add(AudioSavePathInDevice);
+
                     try {
 
                         mediaRecorder.prepare();
@@ -128,7 +122,7 @@ buttonStop.setOnClickListener(new View.OnClickListener() {
 
                 try {
 
-                    mediaPlayer.setDataSource(audiofilesDirectory.get(index));
+                    mediaPlayer.setDataSource(AudioSavePathInDevice);
                     mediaPlayer.prepare();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -142,10 +136,9 @@ buttonStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-              //  mediaPlayer.stop();
-               // buttonRecord.setEnabled(true);
-                //buttonStop.setEnabled(true);
-        //    RetriveAudio();
+               mediaPlayer.stop();
+                buttonRecord.setEnabled(true);
+                buttonStop.setEnabled(true);
 
             }
         });
@@ -165,20 +158,17 @@ buttonStop.setOnClickListener(new View.OnClickListener() {
 
 
     //to creat filename by his data
-    public String CreatRandomAudioName(int stringlength)
+    public String CreatDateAudioName()
     {
 
+        Calendar calendar=Calendar.getInstance();
+        final int year = calendar.get(Calendar.YEAR);
+        final int month = calendar.get(Calendar.MONTH);
+        final int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        StringBuilder stringBuilder=new StringBuilder(stringlength);
+        String CollectionDate=""+day+"-"+(month+1)+"-"+year;
 
-        int i=0;
-        while(i<stringlength)
-        {
-         stringBuilder.append(Alph.charAt(random.nextInt(Alph.length())));
-
-            i++;
-        }
-        return stringBuilder.toString();
+        return CollectionDate;
     }
 
 
@@ -193,29 +183,6 @@ buttonStop.setOnClickListener(new View.OnClickListener() {
         //return file Path
         return directory.getAbsolutePath();
     }
-
-
-    public Object RetriveAudio() {
-        Object object = null;
-        try {
-
-            FileInputStream fileInputStream = openFileInput("records");
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            object = objectInputStream.readObject();
-
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-
-        return object;
-    }
-
 
     @Override
     protected void onDestroy()
