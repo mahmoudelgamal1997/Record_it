@@ -1,6 +1,7 @@
 package com.example2017.android.recordit;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -14,15 +15,8 @@ import android.widget.Button;
 import android.widget.Toast;
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
@@ -32,13 +26,9 @@ public class MainActivity extends AppCompatActivity {
     Button buttonRecord,buttonPlay,buttonStop,buttonStopPlayingRecord;
     MediaRecorder mediaRecorder;
     String AudioSavePathInDevice=null;
-    Random random;
-    String Alph="abcdefghijklmnopqestuvwxyz";
-    int numberOfrandomFile=5;
     public static final int RequestPermissionCode=1;
     MediaPlayer mediaPlayer;
     ArrayList<String> audiofilesDirectory=new ArrayList<>();
-    int index =0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
         buttonStop=(Button)findViewById(R.id.button_stop);
         buttonStopPlayingRecord=(Button)findViewById(R.id.button_stop_PlayingRecord);
 
-        random=new Random();
 
 
         //to Ask for permisssion
@@ -133,23 +122,28 @@ buttonStop.setOnClickListener(new View.OnClickListener() {
                 try {
 
                     mediaPlayer.setDataSource(AudioSavePathInDevice);
+
                     mediaPlayer.prepare();
+                    Toast.makeText(getApplicationContext(),String.valueOf(mediaPlayer.getDuration()),Toast.LENGTH_LONG).show();
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 mediaPlayer.start();
-                index++;
             }
         });
 
         buttonStopPlayingRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+/*
                mediaPlayer.stop();
                 buttonRecord.setEnabled(true);
                 buttonStop.setEnabled(true);
+*/
 
+                Intent intent=new Intent(MainActivity.this,AudioList.class);
+                startActivity(intent);
             }
         });
 
@@ -175,8 +169,11 @@ buttonStop.setOnClickListener(new View.OnClickListener() {
         final int year = calendar.get(Calendar.YEAR);
         final int month = calendar.get(Calendar.MONTH);
         final int day = calendar.get(Calendar.DAY_OF_MONTH);
+        final int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        final int min = calendar.get(Calendar.MINUTE);
+        final int sec = calendar.get(Calendar.SECOND);
 
-        String CollectionDate=""+day+"-"+(month+1)+"-"+year;
+        String CollectionDate=""+day+"-"+(month+1)+"-"+year+"-"+hour+"-"+min+"-"+sec;
 
         return CollectionDate;
     }
