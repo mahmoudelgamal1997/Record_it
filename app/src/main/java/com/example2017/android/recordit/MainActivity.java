@@ -124,7 +124,7 @@ buttonStop.setOnClickListener(new View.OnClickListener() {
                     mediaPlayer.setDataSource(AudioSavePathInDevice);
 
                     mediaPlayer.prepare();
-                    Toast.makeText(getApplicationContext(),String.valueOf(mediaPlayer.getDuration()),Toast.LENGTH_LONG).show();
+                   // Toast.makeText(getApplicationContext(),String.valueOf(mediaPlayer.getDuration()),Toast.LENGTH_LONG).show();
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -187,7 +187,9 @@ buttonStop.setOnClickListener(new View.OnClickListener() {
         if (!directory.exists()) {
             directory.mkdirs();
         }
+
         //return file Path
+
         return directory.getAbsolutePath();
     }
 
