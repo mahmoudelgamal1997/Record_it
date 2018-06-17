@@ -1,266 +1,136 @@
 package com.example2017.android.recordit;
 
-import android.Manifest;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
-import android.media.MediaRecorder;
-import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-import static android.Manifest.permission.RECORD_AUDIO;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Random;
+import android.view.ViewGroup;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button buttonRecord,buttonPlay,buttonStop,buttonStopPlayingRecord;
-    MediaRecorder mediaRecorder;
-    String AudioSavePathInDevice=null;
-    public static final int RequestPermissionCode=1;
-    MediaPlayer mediaPlayer;
-    ArrayList<String> audiofilesDirectory=new ArrayList<>();
+    /**
+     * The {@link android.support.v4.view.PagerAdapter} that will provide
+     * fragments for each of the sections. We use a
+     * {@link FragmentPagerAdapter} derivative, which will keep every
+     * loaded fragment in memory. If this becomes too memory intensive, it
+     * may be best to switch to a
+     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+     */
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+
+    /**
+     * The {@link ViewPager} that will host the section contents.
+     */
+    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        buttonRecord=(Button)findViewById(R.id.button_record);
-        buttonPlay=(Button)findViewById(R.id.button_play);
-        buttonStop=(Button)findViewById(R.id.button_stop);
-        buttonStopPlayingRecord=(Button)findViewById(R.id.button_stop_PlayingRecord);
+        setContentView(R.layout.activity_main2);
 
 
+        // Create the adapter that will return a fragment for each of the three
+        // primary sections of the activity.
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        //to Ask for permisssion
-        ActivityCompat.requestPermissions(MainActivity.this,
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                1);
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(mViewPager);
 
-
-
-        buttonRecord.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (checkPermission())
-                {
-
-
-                    AudioSavePathInDevice=SavingFiles()+"/"+
-                         CreatDateAudioName()+"AudioRecording.3gp";
-
-
-
-                    mediaRecorderReady();
-
-                    try {
-
-                        mediaRecorder.prepare();
-                        mediaRecorder.start();
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    catch (IllegalStateException e)
-                    {
-                    }
-
-                    buttonRecord.setEnabled(false);
-                    buttonPlay.setEnabled(false);
-                    buttonStop.setEnabled(true);
-
-                    Toast.makeText(MainActivity.this, "Recording started",
-                            Toast.LENGTH_LONG).show();
-                }else{
-
-                    requestPermission();
-                }
-
-                buttonRecord.setEnabled(false);
-                buttonPlay.setEnabled(false);
-                buttonStop.setEnabled(true);
-
-            }
-        });
-
-
-buttonStop.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View view) {
-        mediaRecorder.stop();
-        buttonPlay.setEnabled(true);
-        buttonStop.setEnabled(false);
-        buttonRecord.setEnabled(true);
-
-        Toast.makeText(MainActivity.this, "Recording Completed",
-                Toast.LENGTH_LONG).show();
-    }
-});
-
-
-        buttonPlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                mediaPlayer=new MediaPlayer();
-
-
-                buttonRecord.setEnabled(false);
-
-                try {
-
-                    mediaPlayer.setDataSource(AudioSavePathInDevice);
-
-                    mediaPlayer.prepare();
-                   // Toast.makeText(getApplicationContext(),String.valueOf(mediaPlayer.getDuration()),Toast.LENGTH_LONG).show();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                mediaPlayer.start();
-            }
-        });
-
-        buttonStopPlayingRecord.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-/*
-               mediaPlayer.stop();
-                buttonRecord.setEnabled(true);
-                buttonStop.setEnabled(true);
-*/
-
-                Intent intent=new Intent(MainActivity.this,AudioList.class);
-                startActivity(intent);
-            }
-        });
 
     }
 
 
-    public void mediaRecorderReady()
-    {
+    /**
+     * A placeholder fragment containing a simple view.
+     */
+    public static class PlaceholderFragment extends Fragment {
+        /**
+         * The fragment argument representing the section number for this
+         * fragment.
+         */
+        private static final String ARG_SECTION_NUMBER = "section_number";
 
-        mediaRecorder=new MediaRecorder();
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
-        mediaRecorder.setOutputFile(AudioSavePathInDevice);
-    }
-
-
-    //to creat filename by his data
-    public String CreatDateAudioName()
-    {
-
-        Calendar calendar=Calendar.getInstance();
-        final int year = calendar.get(Calendar.YEAR);
-        final int month = calendar.get(Calendar.MONTH);
-        final int day = calendar.get(Calendar.DAY_OF_MONTH);
-        final int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        final int min = calendar.get(Calendar.MINUTE);
-        final int sec = calendar.get(Calendar.SECOND);
-
-        String CollectionDate=""+day+"-"+(month+1)+"-"+year+"-"+hour+"-"+min+"-"+sec;
-
-        return CollectionDate;
-    }
-
-
-
-    public String SavingFiles()
-    {
-        //Creating File
-        File directory = new File(Environment.getExternalStorageDirectory() + File.separator + "AudioRecord");
-        if (!directory.exists()) {
-            directory.mkdirs();
+        public PlaceholderFragment() {
         }
 
-        //return file Path
+        /**
+         * Returns a new instance of this fragment for the given section
+         * number.
+         */
+        public static PlaceholderFragment newInstance(int sectionNumber) {
+            PlaceholderFragment fragment = new PlaceholderFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+            return fragment;
+        }
 
-        return directory.getAbsolutePath();
-    }
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_one, container, false);
 
-    @Override
-    protected void onDestroy()
-    {
-        super.onDestroy();
-
-
-    }
-
-
-
-
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case 1: {
-
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                    Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
-                    finish();
-                    System.exit(0);
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
+            return rootView;
         }
     }
 
+    /**
+     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+     * one of the sections/tabs/pages.
+     */
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+
+            if (position==0){
+                FragmentOne fragmentOne=new FragmentOne();
+                return fragmentOne;
+            }
+            if (position==1){
+                AudioList_Fragment audioListFragment=new AudioList_Fragment();
+
+                return  audioListFragment;
+            }
 
 
 
+            return PlaceholderFragment.newInstance(position + 1);
+        }
 
+        @Override
+        public int getCount() {
+            // Show 3 total pages.
+            return 2;
+        }
 
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return "Record";
+                case 1:
+                    return "Audio Recorded";
 
-    private void requestPermission() {
-        ActivityCompat.requestPermissions(MainActivity.this, new
-                String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, RequestPermissionCode);
+            }
+            return null;
+        }
     }
-
-
-
-
-
-    public boolean checkPermission() {
-        int result = ContextCompat.checkSelfPermission(getApplicationContext(),
-                WRITE_EXTERNAL_STORAGE);
-        int result1 = ContextCompat.checkSelfPermission(getApplicationContext(),
-                RECORD_AUDIO);
-        return result == PackageManager.PERMISSION_GRANTED &&
-                result1 == PackageManager.PERMISSION_GRANTED;
-    }
-
-
-
 }
-
-
-

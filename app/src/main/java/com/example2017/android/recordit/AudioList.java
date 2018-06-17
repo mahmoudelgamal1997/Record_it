@@ -68,6 +68,7 @@ try {
     }
 
     return arrayList;
+
     }catch (Exception e) {
 
     }
@@ -125,32 +126,31 @@ class Customlistview extends BaseAdapter{
         txt_date.setText(arrayList.get(i).date);
 
 
-        but_play.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
+    but_play.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+        try {
 
-                    mediaPlayer2=new MediaPlayer();
-
-                    //to play what w select
-                    //adding name to standard path
+            //to play what w select
+            mediaPlayer2=new MediaPlayer();
 
 
-                    String directory =(Environment.getExternalStorageDirectory()+ File.separator + "AudioRecord"+ File.separator+arrayList.get(i).name).trim();
-                    mediaPlayer2.setDataSource(directory);
-                    mediaPlayer2.prepare();
-                    mediaPlayer2.start();
+            //adding name to standard path
+            String directory =(Environment.getExternalStorageDirectory()+ File.separator + "AudioRecord"+ File.separator+arrayList.get(i).name).trim();
+            mediaPlayer2.setDataSource(directory);
+            mediaPlayer2.prepare();
+            mediaPlayer2.start();
 
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext() , e.getMessage(),Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext() , e.getMessage(),Toast.LENGTH_LONG).show();
 
-                }
+        }
             }
         });
-
-but_delete.setOnClickListener(new View.OnClickListener() {
+    //delete it from listview
+    but_delete.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View view) {
 
@@ -162,7 +162,7 @@ but_delete.setOnClickListener(new View.OnClickListener() {
             deleteRecursive(DirectExistFile);
             Toast.makeText(getApplicationContext(),"file deleted",Toast.LENGTH_LONG).show();
 
-
+        // to refresh listview when item deleted
         final Customlistview customlistview=new Customlistview(ConvertFilesToArray());
 
         listView.setAdapter(customlistview);

@@ -14,8 +14,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/but_play"
-        android:layout_toStartOf="@+id/but_play" />
+        android:layout_toStartOf="@+id/but_delete"
+        android:layout_toLeftOf="@+id/but_delete" />
 
     <Button
         android:layout_width="70dp"
