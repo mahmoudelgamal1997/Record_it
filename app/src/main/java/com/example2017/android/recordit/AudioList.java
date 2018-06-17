@@ -22,6 +22,7 @@ import java.util.ArrayList;
 public class AudioList extends AppCompatActivity {
     File[] AudioListFiles;
     MediaPlayer mediaPlayer2;
+    ListView listView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +30,7 @@ public class AudioList extends AppCompatActivity {
 
 
         mediaPlayer2=new MediaPlayer();
-        ListView listView = (ListView) findViewById(R.id.listView);
+         listView = (ListView) findViewById(R.id.listView);
 
       //  ArrayList<ListItem> arrayList=new ArrayList<>();
 
@@ -155,15 +156,19 @@ but_delete.setOnClickListener(new View.OnClickListener() {
 
         String directory =(Environment.getExternalStorageDirectory()+ File.separator + "AudioRecord"+ File.separator+arrayList.get(i).name).trim();
 
-        try {
-        File DirectExistFile=new File(directory);
-        if (DirectExistFile.isDirectory()) {
-            deleteRecursive(DirectExistFile);
-        }
-        }catch (Exception e){
-            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
 
-        }
+        File DirectExistFile=new File(directory);
+
+            deleteRecursive(DirectExistFile);
+            Toast.makeText(getApplicationContext(),"file deleted",Toast.LENGTH_LONG).show();
+
+
+        final Customlistview customlistview=new Customlistview(ConvertFilesToArray());
+
+        listView.setAdapter(customlistview);
+
+
+
 
 
     }
