@@ -1,11 +1,13 @@
 package com.example2017.android.recordit;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
  */
 public class AudioList_Fragment extends Fragment {
 
+    SharedPreferences sh;
     File[] AudioListFiles;
     MediaPlayer mediaPlayer2;
     ListView listView;
@@ -40,14 +43,8 @@ public class AudioList_Fragment extends Fragment {
         mediaPlayer2 = new MediaPlayer();
         listView = (ListView) view.findViewById(R.id.listView);
 
-        //  ArrayList<ListItem> arrayList=new ArrayList<>();
-
         final Customlistview customlistview = new Customlistview(ConvertFilesToArray());
-
-        //        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, ConvertFilesToArray());
         listView.setAdapter(customlistview);
-
-
         return view;
 
     }
@@ -126,23 +123,35 @@ public class AudioList_Fragment extends Fragment {
             LayoutInflater inflater = getLayoutInflater(null);
             View view1 = inflater.inflate(R.layout.playing_design, null);
             TextView txt_name = (TextView) view1.findViewById(R.id.textView_name);
-            TextView txt_duration = (TextView) view1.findViewById(R.id.textView_size);
-            TextView txt_date = (TextView) view1.findViewById(R.id.textView_date);
+            TextView txt_size = (TextView) view1.findViewById(R.id.textView_size);
+            TextView txt_duration = (TextView) view1.findViewById(R.id.textView_date);
             Button but_play = (Button) view1.findViewById(R.id.but_play);
             Button but_delete = (Button) view1.findViewById(R.id.but_delete);
 
             txt_name.setText(arrayList.get(i).name);
-            txt_duration.setText(arrayList.get(i).duration);
-            txt_date.setText(arrayList.get(i).date);
+            txt_size.setText(arrayList.get(i).duration);
+            txt_duration.setText(arrayList.get(i).date);
 
 
             but_play.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                    Intent intent=new Intent(getActivity(),MediaPlayerView.class);
+                    startActivity(intent);
+                    String directory = (Environment.getExternalStorageDirectory() + File.separator + "AudioRecord" + File.separator + arrayList.get(i).name).trim();
+                    sh=getActivity().getSharedPreferences("PLZ", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor  mydata=sh.edit();
+                    mydata.putString( "data",directory);
+                    mydata.commit();
+
+                    /*
                     try {
 
                         //to play what w select
-                        mediaPlayer2 = new MediaPlayer();
+
+
+                        mediaPlayer2 = new MediaPlayerView();
 
 
                         //adding name to standard path
@@ -154,10 +163,13 @@ public class AudioList_Fragment extends Fragment {
 
                     } catch (Exception e) {
                         e.printStackTrace();
-
                     }
+*/
+
                 }
             });
+
+
             //delete it from listview
             but_delete.setOnClickListener(new View.OnClickListener() {
                 @Override

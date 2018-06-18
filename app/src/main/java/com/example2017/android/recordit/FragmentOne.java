@@ -67,13 +67,10 @@ public class FragmentOne extends Fragment {
 
 
 
-
         buttonRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if (checkPermission())
-                {
 
 
                     AudioSavePathInDevice=SavingFiles()+"/"+
@@ -101,10 +98,7 @@ public class FragmentOne extends Fragment {
 
                     Toast.makeText(getActivity(), "Recording started",
                             Toast.LENGTH_LONG).show();
-                }else{
 
-                    requestPermission();
-                }
 
                 buttonRecord.setEnabled(false);
                 buttonPlay.setEnabled(false);
@@ -154,14 +148,13 @@ public class FragmentOne extends Fragment {
         buttonStopPlayingRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-/*
-               mediaPlayer.stop();
+
+                mediaPlayer.stop();
                 buttonRecord.setEnabled(true);
                 buttonStop.setEnabled(true);
-*/
 
-                Intent intent=new Intent(getActivity(),AudioList.class);
-                startActivity(intent);
+
+
             }
         });
 
@@ -213,9 +206,10 @@ public class FragmentOne extends Fragment {
         }
 
         //return file Path
-
         return directory.getAbsolutePath();
     }
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -234,6 +228,7 @@ public class FragmentOne extends Fragment {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                     Toast.makeText(getActivity(), "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
+                    getActivity().finish();
                     System.exit(0);
                 }
                 return;
@@ -241,11 +236,7 @@ public class FragmentOne extends Fragment {
 
             // other 'case' lines to check for other
             // permissions this app might request
-        }
-    }
-
-
-
+        }}
 
 
 
