@@ -13,7 +13,13 @@ import java.io.IOException;
 
 public class MediaPlayerView extends AppCompatActivity {
 
-    private Button butStart,butPause,butStop;
+    /*
+    *Activity to play audio
+
+
+    */
+
+    private Button butStart,butPause;
     private SeekBar seekBar;
     private SharedPreferences sh;
     android.media.MediaPlayer mediaPlayer;
@@ -27,7 +33,7 @@ public class MediaPlayerView extends AppCompatActivity {
     butPause=(Button)findViewById(R.id.button_pause_media);
     seekBar=(SeekBar)findViewById(R.id.seekBar);
 
-
+    // to recieve audio data which you click on
     sh=getSharedPreferences("PLZ", Context.MODE_PRIVATE );
 
    String source = (sh.getString( "data","emputy" ) );
@@ -60,8 +66,10 @@ public class MediaPlayerView extends AppCompatActivity {
         });
 
 
-
+        // max value of seekbar
         seekBar.setMax(mediaPlayer.getDuration());
+
+
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -82,7 +90,7 @@ public class MediaPlayerView extends AppCompatActivity {
         });
 
 
-
+        // to make seekbar move with audio and stop when audio finish
         Mythread mythread=new Mythread();
         mythread.start();
     }

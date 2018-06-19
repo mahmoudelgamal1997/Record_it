@@ -49,8 +49,6 @@ public class FragmentOne extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-
         View view=inflater.inflate(R.layout.fragment_one,null);
 
         buttonRecord=(Button)view.findViewById(R.id.button_record);
@@ -72,12 +70,12 @@ public class FragmentOne extends Fragment {
             public void onClick(View view) {
 
 
-
+                    //to arrive to external path like whatsapp or any image app
                     AudioSavePathInDevice=SavingFiles()+"/"+
                             CreatDateAudioName()+"AudioRecording.3gp";
 
 
-
+                    // start record
                     mediaRecorderReady();
 
                     try {
@@ -116,8 +114,7 @@ public class FragmentOne extends Fragment {
                 buttonStop.setEnabled(false);
                 buttonRecord.setEnabled(true);
 
-                Toast.makeText(getActivity(), "Recording Completed",
-                        Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Recording Completed",Toast.LENGTH_LONG).show();
             }
         });
 
@@ -125,14 +122,14 @@ public class FragmentOne extends Fragment {
         buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                // to play audio
                 mediaPlayer=new MediaPlayer();
 
 
                 buttonRecord.setEnabled(false);
 
                 try {
-
+                    // give me  path of your audio
                     mediaPlayer.setDataSource(AudioSavePathInDevice);
 
                     mediaPlayer.prepare();
@@ -145,6 +142,7 @@ public class FragmentOne extends Fragment {
             }
         });
 
+        //to stop audio which play now
         buttonStopPlayingRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -165,7 +163,7 @@ public class FragmentOne extends Fragment {
         return view;
     }
 
-
+// function to start record
     public void mediaRecorderReady()
     {
 
@@ -196,7 +194,7 @@ public class FragmentOne extends Fragment {
     }
 
 
-
+    // to save file
     public String SavingFiles()
     {
         //Creating File
@@ -210,7 +208,7 @@ public class FragmentOne extends Fragment {
     }
 
 
-
+    // Request permission
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
