@@ -1,6 +1,7 @@
 package com.example2017.android.recordit;
 
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -60,8 +61,10 @@ public class FragmentOne extends Fragment {
 
         //to Ask for permisssion
         ActivityCompat.requestPermissions(getActivity(),
-                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.RECORD_AUDIO},
                 1);
+
+
 
 
 
@@ -69,38 +72,42 @@ public class FragmentOne extends Fragment {
             @Override
             public void onClick(View view) {
 
-
-                    //to arrive to external path like whatsapp or any image app
-                    AudioSavePathInDevice=SavingFiles()+"/"+
-                            CreatDateAudioName()+"AudioRecording.3gp";
+                    if (checkPermission()) {
 
 
-                    // start record
-                    mediaRecorderReady();
+                        //to arrive to external path like whatsapp or any image app
+                        AudioSavePathInDevice = SavingFiles() + "/" +
+                                CreatDateAudioName() + "AudioRecording.3gp";
 
-                    try {
 
-                        mediaRecorder.prepare();
-                        mediaRecorder.start();
+                        // start record
+                        mediaRecorderReady();
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                        try {
+
+                            mediaRecorder.prepare();
+                            mediaRecorder.start();
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (IllegalStateException e) {
+                        }
+
+                        buttonRecord.setEnabled(false);
+                        buttonPlay.setEnabled(false);
+                        buttonStop.setEnabled(true);
+
+                        Toast.makeText(getActivity(), "Recording started",
+                                Toast.LENGTH_LONG).show();
+
+
+                        buttonRecord.setEnabled(false);
+                        buttonPlay.setEnabled(false);
+                        buttonStop.setEnabled(true);
+
+                    }else{
+                        requestPermission();
                     }
-                    catch (IllegalStateException e)
-                    {
-                    }
-
-                    buttonRecord.setEnabled(false);
-                    buttonPlay.setEnabled(false);
-                    buttonStop.setEnabled(true);
-
-                    Toast.makeText(getActivity(), "Recording started",
-                            Toast.LENGTH_LONG).show();
-
-
-                buttonRecord.setEnabled(false);
-                buttonPlay.setEnabled(false);
-                buttonStop.setEnabled(true);
 
             }
         });
@@ -109,12 +116,21 @@ public class FragmentOne extends Fragment {
         buttonStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mediaRecorder.stop();
-                buttonPlay.setEnabled(true);
-                buttonStop.setEnabled(false);
-                buttonRecord.setEnabled(true);
 
+                      try {
+                          mediaRecorder.stop();
+                          buttonPlay.setEnabled(true);
+                          buttonStop.setEnabled(false);
+                          buttonRecord.setEnabled(true);
+                      }catch (Exception e){
+                       Toast.makeText(getActivity(), e.getMessage(),Toast.LENGTH_LONG).show();
+
+                      }
                 Toast.makeText(getActivity(), "Recording Completed",Toast.LENGTH_LONG).show();
+
+
+
+
             }
         });
 
@@ -122,6 +138,11 @@ public class FragmentOne extends Fragment {
         buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
+                if (checkPermission()){
+
+
                 // to play audio
                 mediaPlayer=new MediaPlayer();
 
@@ -139,7 +160,11 @@ public class FragmentOne extends Fragment {
                     e.printStackTrace();
                 }
                 mediaPlayer.start();
-            }
+            }else {
+                requestPermission();
+
+                }
+                }
         });
 
         //to stop audio which play now
@@ -221,13 +246,13 @@ public class FragmentOne extends Fragment {
 
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
+                    Toast.makeText(getContext(), "Permission applied to read your External storage", Toast.LENGTH_SHORT).show();
+
                 } else {
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
-                    Toast.makeText(getActivity(), "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
-                    getActivity().finish();
-                    System.exit(0);
+                    Toast.makeText(getContext(), "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
                 }
                 return;
             }
@@ -235,7 +260,6 @@ public class FragmentOne extends Fragment {
             // other 'case' lines to check for other
             // permissions this app might request
         }}
-
 
 
 
@@ -257,4 +281,14 @@ public class FragmentOne extends Fragment {
                 result1 == PackageManager.PERMISSION_GRANTED;
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+
+        requestPermission();
+
+
+    }
 }
