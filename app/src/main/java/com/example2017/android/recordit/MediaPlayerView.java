@@ -75,10 +75,10 @@ public class MediaPlayerView extends AppCompatActivity {
               mediaPlayer.start();
               pulseView.startPulse();
 
+              /*
 
               //to start thread
               Running=true;
-
               new Thread(new Runnable() {
                   @Override
                   public void run() {
@@ -104,7 +104,7 @@ public class MediaPlayerView extends AppCompatActivity {
               }).start();
 
 
-
+*/
 
 
 
@@ -141,6 +141,8 @@ public class MediaPlayerView extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 fprogress=i;
+
+                currenttime.setText(organizeTime(i));
                 if (i==mediaPlayer.getDuration()){
                     pulseView.finishPulse();
                     Running=false;

@@ -49,7 +49,6 @@ public class AudioList_Fragment extends Fragment {
 
         customlistview = new Customlistview(ConvertFilesToArray());
         listView.setAdapter(customlistview);
-        Toast.makeText(getContext(), "refresh", Toast.LENGTH_SHORT).show();
         return view;
 
     }

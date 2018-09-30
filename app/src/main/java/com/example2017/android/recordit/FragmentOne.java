@@ -254,7 +254,7 @@ public class FragmentOne extends Fragment {
 
                         //to arrive to external path like whatsapp or any image app
                         AudioSavePathInDevice = SavingFiles() + "/" +
-                                CreatDateAudioName() + "FinalAudioRecording.3gp";
+                                CreatDateAudioName() + "AudioRecording.3gp";
                         mergeMediaFiles(true, path,  AudioSavePathInDevice);
 
                         for(int i=0;i<path.size();i++) {
@@ -496,30 +496,12 @@ public class FragmentOne extends Fragment {
 
     }
 
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            // Refresh your fragment here
 
-
-
-        }
-    }
     @Override
     public void onPause() {
         super.onPause();
 
     }
 
-   /*
-void NotificationRecord(){
-    MediaPlayer notify= new MediaPlayer();
-    notify=MediaPlayer.create(getContext(),R.raw.notification);
 
-        notify.start();
-
-
-}
-*/
 }

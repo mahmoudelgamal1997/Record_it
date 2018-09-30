@@ -15,7 +15,7 @@
         android:id="@+id/pv"
         app:pv_alpha="70"
         app:pv_color="#000000"
-        app:pv_icon="@drawable/record"
+        app:pv_icon="@drawable/music"
         app:pv_icon_height="120dp"
         app:pv_icon_width="120dp"
         app:pv_measure="height"
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="250dp"
         android:progress="3"
         android:thumb="@drawable/seekbarprogress"
        />
@@ -62,7 +62,10 @@
         android:text="00:00"
         android:id="@+id/textView2"
         android:layout_centerVertical="true"
-        android:layout_alignStart="@+id/seekBar" />
+        android:layout_alignStart="@+id/seekBar"
+        android:layout_below="@+id/seekBar"
+        android:layout_marginTop="10dp"
+        />
 
     <TextView
         android:layout_width="wrap_content"
@@ -72,7 +75,7 @@
         android:id="@+id/textView3"
         android:layout_below="@+id/seekBar"
         android:layout_toEndOf="@+id/textView2"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="260dp"
         />
 
