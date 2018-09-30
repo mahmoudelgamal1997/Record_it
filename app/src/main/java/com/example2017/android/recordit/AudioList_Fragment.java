@@ -3,6 +3,8 @@ package com.example2017.android.recordit;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -29,6 +31,7 @@ public class AudioList_Fragment extends Fragment {
     File[] AudioListFiles;
     MediaPlayer mediaPlayer2;
     ListView listView;
+     Customlistview customlistview;
 
     public AudioList_Fragment() {
     }
@@ -40,14 +43,18 @@ public class AudioList_Fragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_audio_list, null);
 
 
+
         mediaPlayer2 = new MediaPlayer();
         listView = (ListView) view.findViewById(R.id.listView);
 
-        final Customlistview customlistview = new Customlistview(ConvertFilesToArray());
+        customlistview = new Customlistview(ConvertFilesToArray());
         listView.setAdapter(customlistview);
+        Toast.makeText(getContext(), "refresh", Toast.LENGTH_SHORT).show();
         return view;
 
     }
+
+
 
     public ArrayList ConvertFilesToArray() {
         ArrayList<ListItem> arrayList = new ArrayList<>();
@@ -182,7 +189,7 @@ public class AudioList_Fragment extends Fragment {
 
                     deleteRecursive(DirectExistFile);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        Toast.makeText(getContext(), "file deleted", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "file deleted", Toast.LENGTH_SHORT).show();
                     }
 
                     // to refresh listview when item deleted
@@ -205,5 +212,20 @@ public class AudioList_Fragment extends Fragment {
             fileOrDirectory.delete();
         }
     }
-}
+
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            // Refresh your fragment here
+
+
+
+            customlistview = new Customlistview(ConvertFilesToArray());
+            listView.setAdapter(customlistview);
+        }
+
+
+    }}
 
