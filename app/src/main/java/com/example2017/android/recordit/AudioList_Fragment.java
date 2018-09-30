@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.media.MediaPlayer;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by M7moud on 17-Jun-18.
@@ -44,7 +46,6 @@ public class AudioList_Fragment extends Fragment {
 
 
 
-        mediaPlayer2 = new MediaPlayer();
         listView = (ListView) view.findViewById(R.id.listView);
 
         customlistview = new Customlistview(ConvertFilesToArray());
@@ -65,15 +66,17 @@ public class AudioList_Fragment extends Fragment {
             if (directory.isDirectory()) {
 
                 for (int i = 0; i < (directory.length() - 1); i++) {
+                    mediaPlayer2=new android.media.MediaPlayer();
                     mediaPlayer2.setDataSource(AudioListFiles[i].getAbsolutePath());
-                    int duration = mediaPlayer2.getDuration();
+                    mediaPlayer2.prepare();
+                    String duration = organizeTime(mediaPlayer2.getDuration());
                     String name = AudioListFiles[i].getName();
                     Double size = (AudioListFiles[i].length() / 1024.0);
 
 
                     arrayList.add(new ListItem(name,
                             String.valueOf((approximate(size) + "Kb")),
-                            String.valueOf(duration)
+                            duration
 
                     ));
                 }
@@ -126,7 +129,7 @@ public class AudioList_Fragment extends Fragment {
         @Override
         public View getView(final int i, View view, ViewGroup viewGroup) {
 
-            LayoutInflater inflater = getLayoutInflater(null);
+            final LayoutInflater inflater = getLayoutInflater(null);
             View view1 = inflater.inflate(R.layout.playing_design, null);
             TextView txt_name = (TextView) view1.findViewById(R.id.textView_name);
             TextView txt_size = (TextView) view1.findViewById(R.id.textView_size);
@@ -143,14 +146,17 @@ public class AudioList_Fragment extends Fragment {
                 @Override
                 public void onClick(View view) {
 
+
                     Intent intent=new Intent(getActivity(),MediaPlayerView.class);
+                    intent.putExtra("postion",i);
                     startActivity(intent);
+                    /*
                     String directory = (Environment.getExternalStorageDirectory() + File.separator + "AudioRecord" + File.separator + arrayList.get(i).name).trim();
                     sh=getActivity().getSharedPreferences("PLZ", Context.MODE_PRIVATE);
                     SharedPreferences.Editor  mydata=sh.edit();
                     mydata.putString( "data",directory);
                     mydata.commit();
-
+*/
                     /*
                     try {
 
@@ -203,6 +209,11 @@ public class AudioList_Fragment extends Fragment {
             return view1;
         }
 
+
+
+
+
+
         void deleteRecursive(File fileOrDirectory) {
             if (fileOrDirectory.isDirectory())
                 for (File child : fileOrDirectory.listFiles())
@@ -226,5 +237,38 @@ public class AudioList_Fragment extends Fragment {
         }
 
 
-    }}
+    }
+
+    public  String organizeTime(double num){
+        int sec,min=0;
+
+        sec=(int)num/(1000);
+        min=sec/60;
+        sec=sec-min*60;
+        return updateTimer(sec);
+    }
+
+    private String updateTimer(int second) {
+        int minute=0;
+        int hour=0;
+        if (second > 59) {
+            minute++;
+            second = 0;
+        }
+
+        if (minute > 59) {
+            minute = second = 0;
+            hour++;
+            return String.format(Locale.US, "%02d", hour) + ":" + String.format(Locale.US, "%02d", minute) +
+                    ":" + String.format(Locale.US, "%02d", second);
+        }
+
+        return String.format(Locale.US, "%02d", minute) + ":" + String.format(Locale.US, "%02d", second);
+
+
+    }
+
+
+
+}
 

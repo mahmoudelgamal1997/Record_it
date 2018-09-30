@@ -55,6 +55,10 @@ import java.util.List;
 import java.util.Locale;
 
 import com.coremedia.iso.boxes.Container;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.googlecode.mp4parser.authoring.Movie;
 import com.googlecode.mp4parser.authoring.Track;
 import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
@@ -84,7 +88,8 @@ public class FragmentOne extends Fragment {
     NotificationManager manager   ;
     ImageView mic; ;
 
-
+    InterstitialAd mInterstitialAd;
+    private InterstitialAd interstitial;
 
     public FragmentOne() {
         // Required empty public constructor
@@ -113,6 +118,33 @@ public class FragmentOne extends Fragment {
         //to Ask for permisssion
 
         requestPermission();
+
+
+        AdView mAdView = (AdView)view. findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+// Prepare the Interstitial Ad
+        interstitial = new InterstitialAd(getActivity());
+// Insert the Ad Unit ID
+        interstitial.setAdUnitId(getString(R.string.admob_interstitial_id));
+
+        interstitial.loadAd(adRequest);
+// Prepare an Interstitial Ad Listener
+        interstitial.setAdListener(new AdListener() {
+            public void onAdLoaded() {
+                // Call displayInterstitial() function
+                displayInterstitial();
+            }
+        });
+
+
+
+
+
+
+
+
 
 
         buttonRecord.setOnClickListener(new View.OnClickListener() {
@@ -504,4 +536,12 @@ public class FragmentOne extends Fragment {
     }
 
 
+
+
+    public void displayInterstitial() {
+// If Ads are loaded, show Interstitial else show nothing.
+        if (interstitial.isLoaded()) {
+            interstitial.show();
+        }
+    }
 }

@@ -42,18 +42,44 @@
         android:src="@drawable/red_play_button"
         android:background="@drawable/circle_button_record_player"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="84dp" />
+        android:layout_marginTop="74dp" />
 
     <ImageButton
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:text="pause"
+        android:id="@+id/button_pause_media"
+        android:layout_below="@+id/seekBar"
         android:scaleType="fitXY"
         android:src="@drawable/pause"
-        android:id="@+id/button_pause_media"
         android:background="@drawable/circle_button_record_player"
-        android:layout_alignTop="@+id/button_start_media"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="74dp" />
+
+
+    <ImageButton
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/button_next_media"
+        android:layout_below="@+id/seekBar"
+        android:scaleType="fitXY"
+        android:src="@drawable/right"
+        android:layout_marginLeft="260dp"
+        android:background="@drawable/circle_button_record_player"
+        android:layout_marginTop="74dp" />
+
+    <ImageButton
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/button_previous_media"
+        android:layout_below="@+id/seekBar"
+        android:scaleType="fitXY"
+        android:src="@drawable/left"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/circle_button_record_player"
+        android:layout_marginTop="74dp" />
+
+
+
 
     <TextView
         android:layout_width="wrap_content"
@@ -79,5 +105,15 @@
         android:layout_marginLeft="260dp"
         />
 
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        app:adSize="BANNER"
+        app:adUnitId="@string/banner_ad_unit_id">
+    </com.google.android.gms.ads.AdView>
 
 </RelativeLayout>

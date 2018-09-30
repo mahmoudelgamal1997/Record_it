@@ -1,7 +1,9 @@
 package com.example2017.android.recordit;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,8 +15,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gigamole.library.PulseView;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class MediaPlayerView extends AppCompatActivity {
@@ -25,14 +33,18 @@ public class MediaPlayerView extends AppCompatActivity {
 
     */
 
-    private ImageButton butStart,butPause;
+    private ImageButton butStart,butPause,next,previous;
     private TextView currenttime,totaltime;
     private SeekBar seekBar;
     private SharedPreferences sh;
     android.media.MediaPlayer mediaPlayer;
     int fprogress;
+    int postion=0;
     PulseView pulseView;
+    File[] arrayList;
     int seconds =0;
+    InterstitialAd mInterstitialAd;
+    private InterstitialAd interstitial;
     private Handler handler;
     private boolean Running=false;
     @Override
@@ -42,6 +54,10 @@ public class MediaPlayerView extends AppCompatActivity {
 
     butStart =(ImageButton) findViewById(R.id.button_start_media);
     butPause=(ImageButton) findViewById(R.id.button_pause_media);
+    next=(ImageButton) findViewById(R.id.button_next_media);
+    previous=(ImageButton) findViewById(R.id.button_previous_media);
+
+
     pulseView=(PulseView)findViewById(R.id.pv);
     seekBar=(SeekBar)findViewById(R.id.seekBar);
     currenttime=(TextView)findViewById(R.id.textView2);
@@ -50,14 +66,50 @@ public class MediaPlayerView extends AppCompatActivity {
         handler=new Handler(getApplicationContext().getMainLooper());
 
         butPause.setVisibility(View.INVISIBLE);
-    // to recieve audio data which you click on
-    sh=getSharedPreferences("PLZ", Context.MODE_PRIVATE );
 
-    String source = (sh.getString( "data","emputy" ) );
 
-    mediaPlayer=new android.media.MediaPlayer();
+
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+// Prepare the Interstitial Ad
+        interstitial = new InterstitialAd(MediaPlayerView.this);
+// Insert the Ad Unit ID
+        interstitial.setAdUnitId(getString(R.string.admob_interstitial_id));
+
+        interstitial.loadAd(adRequest);
+// Prepare an Interstitial Ad Listener
+        interstitial.setAdListener(new AdListener() {
+            public void onAdLoaded() {
+                // Call displayInterstitial() function
+                displayInterstitial();
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
+        arrayList = new File[0];
+        File directory = new File(Environment.getExternalStorageDirectory() + File.separator + "AudioRecord");
+        if (directory.isDirectory()){
+
+            arrayList=directory.listFiles();
+
+        }
+            postion=getIntent().getIntExtra("postion",0);
+
+
+        mediaPlayer=new android.media.MediaPlayer();
         try {
-            mediaPlayer.setDataSource(source);
+            mediaPlayer.setDataSource(arrayList[postion].getAbsolutePath());
             mediaPlayer.prepare();
 
             totaltime.setText(organizeTime(mediaPlayer.getDuration()));
@@ -75,47 +127,68 @@ public class MediaPlayerView extends AppCompatActivity {
               mediaPlayer.start();
               pulseView.startPulse();
 
-              /*
-
-              //to start thread
-              Running=true;
-              new Thread(new Runnable() {
-                  @Override
-                  public void run() {
-
-                      while(Running){
-                          try {
-                              Thread.sleep(1000);
-                              seconds++;
-                          } catch (InterruptedException e) {
-                              e.printStackTrace();
-                          }
-
-                      handler.post(new Runnable() {
-                          @Override
-                          public void run() {
-                         currenttime.setText(updateTimer(seconds));
-
-                          }
-                      });
-
-                      }
-                  }
-              }).start();
-
-
-*/
-
-
-
-
-
-
-
 
 
           }
       });
+
+
+
+
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                mediaPlayer.stop();
+                try {
+                    mediaPlayer=new android.media.MediaPlayer();
+                    if (postion<arrayList.length-1){
+                        postion=postion+1;
+
+                    }
+                    mediaPlayer.setDataSource(arrayList[postion].getAbsolutePath());
+                    mediaPlayer.prepare();
+                    seekBar.setProgress(0);
+                    seekBar.setMax(mediaPlayer.getDuration());
+                    butStart.setVisibility(View.VISIBLE);
+                    butPause.setVisibility(View.INVISIBLE);
+
+                    totaltime.setText(organizeTime(mediaPlayer.getDuration()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        });
+
+        previous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                mediaPlayer.stop();
+                try {
+                    mediaPlayer=new android.media.MediaPlayer();
+                    if (postion>0){
+                        postion=postion-1;
+
+                    }
+                    mediaPlayer.setDataSource(arrayList[postion].getAbsolutePath());
+                    mediaPlayer.prepare();
+                    seekBar.setMax(mediaPlayer.getDuration());
+                    seekBar.setProgress(0);
+                    butStart.setVisibility(View.VISIBLE);
+                    butPause.setVisibility(View.INVISIBLE);
+                    totaltime.setText(organizeTime(mediaPlayer.getDuration()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        });
+
+
 
 
         butPause.setOnClickListener(new View.OnClickListener() {
@@ -235,4 +308,14 @@ public void run(){
 
 
     }
+
+
+
+    public void displayInterstitial() {
+// If Ads are loaded, show Interstitial else show nothing.
+        if (interstitial.isLoaded()) {
+            interstitial.show();
+        }
+    }
+
 }

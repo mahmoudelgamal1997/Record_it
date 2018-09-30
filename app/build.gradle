@@ -28,6 +28,6 @@ dependencies {
     compile 'com.melnykov:floatingactionbutton:1.1.0'
     compile 'com.jpardogo.materialtabstrip:library:1.0.6'
     compile 'com.github.devlight.pulseview:library:1.0.2'
-
+    compile 'com.google.android.gms:play-services-ads:8.4.0'
 
 }
