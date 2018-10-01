@@ -139,14 +139,6 @@ public class FragmentOne extends Fragment {
         });
 
 
-
-
-
-
-
-
-
-
         buttonRecord.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {

@@ -63,7 +63,8 @@
         android:layout_below="@+id/seekBar"
         android:scaleType="fitXY"
         android:src="@drawable/right"
-        android:layout_marginLeft="260dp"
+        android:layout_toRightOf="@+id/button_start_media"
+        android:layout_marginLeft="15dp"
         android:background="@drawable/circle_button_record_player"
         android:layout_marginTop="74dp" />
 
@@ -74,7 +75,8 @@
         android:layout_below="@+id/seekBar"
         android:scaleType="fitXY"
         android:src="@drawable/left"
-        android:layout_marginLeft="20dp"
+        android:layout_toLeftOf="@+id/button_start_media"
+        android:layout_marginRight="15dp"
         android:background="@drawable/circle_button_record_player"
         android:layout_marginTop="74dp" />
 

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "975556799983",
+    "firebase_url": "https://record-it-984ec.firebaseio.com",
+    "project_id": "record-it-984ec",
+    "storage_bucket": "record-it-984ec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:975556799983:android:440763491751dca0",
+        "android_client_info": {
+          "package_name": "com.example2017.android.recordit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "975556799983-62unrm31idcn04bank0bq23r4u9dam3n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example2017.android.recordit",
+            "certificate_hash": "b13d4f61873cd578287c1202b73d5ac4f4a9bb32"
+          }
+        },
+        {
+          "client_id": "975556799983-bgakjkkirgvea25sredqmfhft2f5qcjn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbiEvXK6hQHh2VZQPBEF8jCoFbgmyq_wo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "975556799983-bgakjkkirgvea25sredqmfhft2f5qcjn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
