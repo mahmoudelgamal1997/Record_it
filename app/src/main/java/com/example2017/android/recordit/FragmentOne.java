@@ -59,6 +59,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.mediation.customevent.CustomEventBannerListener;
 import com.googlecode.mp4parser.authoring.Movie;
 import com.googlecode.mp4parser.authoring.Track;
 import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
@@ -88,7 +89,7 @@ public class FragmentOne extends Fragment {
     NotificationManager manager   ;
     ImageView mic; ;
 
-    InterstitialAd mInterstitialAd;
+    private AdView mAdView;
     private InterstitialAd interstitial;
 
     public FragmentOne() {
@@ -110,6 +111,9 @@ public class FragmentOne extends Fragment {
         buttonPause = (Button) view.findViewById(R.id.button_pause);
         textView = (TextView) view.findViewById(R.id.textView);
         mic=(ImageView)view.findViewById(R.id.imageView);
+        mAdView = view.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         handler = new Handler(getActivity().getMainLooper());
 
@@ -120,21 +124,41 @@ public class FragmentOne extends Fragment {
         requestPermission();
 
 
-        AdView mAdView = (AdView)view. findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-
-// Prepare the Interstitial Ad
-        interstitial = new InterstitialAd(getActivity());
-// Insert the Ad Unit ID
-        interstitial.setAdUnitId(getString(R.string.admob_interstitial_id));
-
-        interstitial.loadAd(adRequest);
-// Prepare an Interstitial Ad Listener
-        interstitial.setAdListener(new AdListener() {
+        mAdView.setAdListener(new AdListener() {
+            @Override
             public void onAdLoaded() {
-                // Call displayInterstitial() function
-                displayInterstitial();
+                // Code to be executed when an ad finishes loading.
+                Log.e("ADBanner","success");
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+                Log.e("ADBanner","error "+errorCode);
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+                Log.e("ADBanner","open");
+
+            }
+
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+                Log.e("ADBanner","onAdLeftApplication");
+
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when the user is about to return
+                // to the app after tapping on an ad.
+                Log.e("ADBanner","closed");
+
             }
         });
 

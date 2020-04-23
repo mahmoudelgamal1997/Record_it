@@ -1,6 +1,7 @@
 package com.example2017.android.recordit;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -11,6 +12,7 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -187,24 +189,46 @@ public class AudioList_Fragment extends Fragment {
                 @Override
                 public void onClick(View view) {
 
-                    String directory = (Environment.getExternalStorageDirectory() + File.separator + "AudioRecord" + File.separator + arrayList.get(i).name).trim();
+                    final String directory = (Environment.getExternalStorageDirectory() + File.separator + "AudioRecord" + File.separator + arrayList.get(i).name).trim();
+
+                    final AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+                    builder.setMessage("Do you want to delete this file");
+                    builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
 
 
-                    File DirectExistFile = new File(directory);
 
-                    deleteRecursive(DirectExistFile);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        Toast.makeText(getContext(), "file deleted", Toast.LENGTH_SHORT).show();
-                    }
 
-                    // to refresh listview when item deleted
-                    final Customlistview customlistview = new Customlistview(ConvertFilesToArray());
+                            File DirectExistFile = new File(directory);
 
-                    listView.setAdapter(customlistview);
+                            deleteRecursive(DirectExistFile);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                Toast.makeText(getContext(), "file deleted", Toast.LENGTH_SHORT).show();
+                            }
 
+                            // to refresh listview when item deleted
+                            final Customlistview customlistview = new Customlistview(ConvertFilesToArray());
+
+                            listView.setAdapter(customlistview);
+
+
+                        }
+                    });
+
+                    builder.setNegativeButton("no", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+                    AlertDialog alertDialog=builder.create();
+                    alertDialog.show();
 
                 }
-            });
+                    });
+
+
 
             return view1;
         }

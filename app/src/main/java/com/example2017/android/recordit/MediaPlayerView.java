@@ -42,7 +42,8 @@ public class MediaPlayerView extends AppCompatActivity {
     int postion=0;
     PulseView pulseView;
     File[] arrayList;
-    int seconds =0;
+
+    int sec,min=0;
     InterstitialAd mInterstitialAd;
     private InterstitialAd interstitial;
     private Handler handler;
@@ -112,7 +113,7 @@ public class MediaPlayerView extends AppCompatActivity {
             mediaPlayer.setDataSource(arrayList[postion].getAbsolutePath());
             mediaPlayer.prepare();
 
-            totaltime.setText(organizeTime(mediaPlayer.getDuration()));
+            totaltime.setText(updateTimer(mediaPlayer.getDuration()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -153,7 +154,7 @@ public class MediaPlayerView extends AppCompatActivity {
                     butStart.setVisibility(View.VISIBLE);
                     butPause.setVisibility(View.INVISIBLE);
 
-                    totaltime.setText(organizeTime(mediaPlayer.getDuration()));
+                    totaltime.setText(updateTimer(mediaPlayer.getDuration()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -179,7 +180,7 @@ public class MediaPlayerView extends AppCompatActivity {
                     seekBar.setProgress(0);
                     butStart.setVisibility(View.VISIBLE);
                     butPause.setVisibility(View.INVISIBLE);
-                    totaltime.setText(organizeTime(mediaPlayer.getDuration()));
+                    totaltime.setText(updateTimer(mediaPlayer.getDuration()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -215,7 +216,7 @@ public class MediaPlayerView extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 fprogress=i;
 
-                currenttime.setText(organizeTime(i));
+                currenttime.setText(updateTimer(i));
                 if (i==mediaPlayer.getDuration()){
                     pulseView.finishPulse();
                     Running=false;
@@ -280,31 +281,16 @@ public void run(){
 
 
 
-    public  String organizeTime(double num){
-        int sec,min=0;
-
-        sec=(int)num/(1000);
-        min=sec/60;
-        sec=sec-min*60;
-        return updateTimer(sec);
-    }
 
     private String updateTimer(int second) {
-        int minute=0;
-        int hour=0;
-        if (second > 59) {
-            minute++;
-            second = 0;
-        }
+        int min=0;
+        second=(int)(second/1000);
+        min=(int) second/60;
+        second=second-min*60;
+        System.out.println(second+":"+min);
 
-        if (minute > 59) {
-            minute = second = 0;
-            hour++;
-            return String.format(Locale.US, "%02d", hour) + ":" + String.format(Locale.US, "%02d", minute) +
-                    ":" + String.format(Locale.US, "%02d", second);
-        }
 
-        return String.format(Locale.US, "%02d", minute) + ":" + String.format(Locale.US, "%02d", second);
+        return String.format(Locale.US, "%02d", min) + ":" + String.format(Locale.US, "%02d", second);
 
 
     }
